@@ -14,7 +14,10 @@ List of things to do:
 	3. Texture modification
 		1. Constrained optimization problems with decribable attributes for editing the textures.
 
-## Installing
+## Setup
+
+
+### Install dependencies
 
 The code depends on VLFEAT and MatConvNet. Download and install these in the current directories. The code is tested under MatConvNet version `v1-beta15`. You can follow the detailed instructions on the project pages to install these on your local machine. For example here are the steps I followed to install these on a MacBookPro laptop running MATLAB_R2011a. 
 
@@ -33,4 +36,10 @@ Similarly, to intall VLFEAT:
 
 
 Once installed modify `setup.m` to point to their locations.
+
+### Download ImageNet pre-trained CNNs
+
+For the experiments in the paper we use these three CNNs: [imagenet-caffe-alex](http://www.vlfeat.org/matconvnet/models/imagenet-caffe-alex.mat), [imagenet-vgg-m](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-m.mat), [imagenet-vgg-verydeep-16](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-16.mat).
+
+Download these models and put them in `data/models` directory.
 
