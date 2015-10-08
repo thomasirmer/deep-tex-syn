@@ -16,6 +16,4 @@ if nargout > 1
   d11(:,1,:,:) = - d1_(:,1,:,:) ;
   d22(1,:,:,:) = - d2_(1,:,:,:) ;
   dx = beta*(d11 + d22);
-  if(any(isnan(dx)))
-  end
 end
