@@ -1,20 +1,19 @@
-%function texture_syn(im, nets, varargin)
-nets = load('data/models/imagenet-vgg-verydeep-16.mat');
+function texture_syn(im, nets, varargin)
 clear net;
 opts = texture_setup();
 
 % Initialize a dagNN from simple network
 [net, objectiveString] = init_dag_cnn(im, nets, opts);
 
-%% Initialize random image
-options.display = 'iter';
-options.maxFunEvals = 1000;
-options.useMex = false;
-x0_sigma = 2.7098e+04;
-x = randn(opts.imageSize, 'single') ;
-x = x / norm(x(:)) * x0_sigma ; 
+% Initialize random image
+x = randn(opts.imageSize, 'single')*127;
 x = x(:);
-x = minFunc(@(x) texture_fun(x, net, objectiveString), x, options); 
+
+if opts.useGPU
+  x = gpuArray(x);
+end
+
+x = minFunc(@(x) texture_fun(x, net, objectiveString, opts), x, opts.minFunc); 
 
 % Display image
 figure(1); clf;
