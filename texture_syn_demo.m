@@ -3,7 +3,7 @@
 setup;
 
 % Prepare image
-im = imread('data/textures/food.jpg');
+im = imread('food.jpg');
 im = imresize(im, [224 224]);
 
 % Load network
