@@ -33,6 +33,10 @@ for i = 1:length(opts.textureLayer),
     net.vars(texInd).precious = true;
 end
 net.conserveMemory = false;
+if opts.useGPU
+  im_ = gpuArray(im_);
+  net.move('gpu');
+end
 net.eval({'input', im_});
 
 
