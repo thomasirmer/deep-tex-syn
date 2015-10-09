@@ -30,7 +30,7 @@ preds = ress(end).x;
 net.eval({'x0', im_}) ;
 pred = net.vars(net.getVarIndex('x2')).value ;
 
-useGPU = true;
+useGPU = false;
 
 % Image synthesis
 x0_sigma = 2.7098e+04;
