@@ -20,6 +20,6 @@ figure(1); clf;
 subplot(1,2,1);
 imagesc(im); axis image off;
 subplot(1,2,2);
-x_ = bsxfun(@plus, reshape(x, opts.imageSize), nets.normalization.averageImage) ;
+x_ = bsxfun(@plus, reshape(x, opts.imageSize), mean(mean(nets.normalization.averageImage))) ;
 imagesc(vl_imsc(x_));
 axis image off;

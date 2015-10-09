@@ -25,9 +25,9 @@ for i = 1:length(opts.textureLayer),
 end
     
 % Compute targets to match
-im = imresize(im, nets.normalization.imageSize([2 1]));
+meanRGB = mean(mean(nets.normalization.averageImage));
 im_ = single(im);
-im_ = im_ - nets.normalization.averageImage;
+im_ = bsxfun(@minus, im_, meanRGB);
 for i = 1:length(opts.textureLayer), 
     texInd = net.getVarIndex(sprintf('tex%i',i));
     net.vars(texInd).precious = true;
