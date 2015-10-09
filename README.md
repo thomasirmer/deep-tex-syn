@@ -22,11 +22,10 @@ Run the `texture_syn_demo.m` to see an example of texture synthesis. The code im
 
 
 ## Setup
-/Users/smaji/Research/deep-tex-syn/food.jpg
 
 ### Install dependencies
 
-The code depends on VLFEAT and MatConvNet. Download and install these in the current directories. The code is tested under MatConvNet version `v1-beta15`. You can follow the detailed instructions on the project pages to install these on your local machine. For example here are the steps I followed to install these on a MacBookPro laptop running MATLAB_R2011a. 
+The code depends on VLFEAT, MatConvNet, and minFunc. Download and install these in the current directories. The code is tested under MatConvNet version `v1-beta15`. You can follow the detailed instructions on the project pages to install these on your local machine. For example, here are the steps I followed to install these on a MacBookPro laptop running MATLAB_R2014b. 
 
 To install MatConvNet (w/o GPU support):
 
@@ -35,12 +34,13 @@ To install MatConvNet (w/o GPU support):
 	>> git checkout -n v1-best15
 	>> make
 
-Similarly, to intall VLFEAT:
+To install VLFEAT:
 
 	>> git clone git@github.com:vlfeat/vlfeat.git
 	>> cd vlfeat
-	>> make ARCH=maci64 MEX=/Applications/MATLAB_R2011a.app/bin/mex
-
+	>> make ARCH=maci64 MEX=/Applications/MATLAB_R2014b.app/bin/mex
+	
+To install minFunc follow the instructions on the [webpage](https://www.cs.ubc.ca/~schmidtm/Software/minFunc.html).
 
 Once installed modify `setup.m` to point to their locations.
 
