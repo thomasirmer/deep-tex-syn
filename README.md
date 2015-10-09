@@ -14,8 +14,15 @@ List of things to do:
 	3. Texture modification
 		1. Constrained optimization problems with decribable attributes for editing the textures.
 
-## Setup
+## Texture synthesis
 
+Run the `texture_syn_demo.m` to see an example of texture synthesis. The code implements Gatys et al., NIPS 2015 using the Oxford's `vgg-verydeep-16` network. The code should produce the output below. On a NVIDIA K40 GPU the code takes about 7 minutes to reconstruct the image.
+
+![Output of the demo](demo-output.png)
+
+
+## Setup
+/Users/smaji/Research/deep-tex-syn/food.jpg
 
 ### Install dependencies
 
