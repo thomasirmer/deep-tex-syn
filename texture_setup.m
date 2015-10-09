@@ -7,8 +7,6 @@ opts.beta = 6;
 opts.lambdaL2 = 08e-10;
 opts.textureLayer = {'relu1_1','relu2_1','relu3_1','relu4_1','relu5_1'};
 opts.textureLayerWeights = [1 1 1 1 1];
-%opts.textureLayer = {'relu5_1'};
-%opts.textureLayerWeights = [1];
 opts.useGPU = true;
 
 % minFunc options (no pesky learning rates)
