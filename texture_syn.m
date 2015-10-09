@@ -1,4 +1,4 @@
-function texture_syn(im, nets, varargin)
+function imsyn = texture_syn(im, nets, varargin)
 clear net;
 opts = texture_setup();
 
@@ -14,12 +14,5 @@ if opts.useGPU
 end
 
 x = minFunc(@(x) texture_fun(x, net, objectiveString, opts), x, opts.minFunc); 
-
-% Display image
-figure(1); clf;
-subplot(1,2,1);
-imagesc(im); axis image off;
-subplot(1,2,2);
 x_ = bsxfun(@plus, reshape(x, opts.imageSize), mean(mean(nets.normalization.averageImage))) ;
-imagesc(vl_imsc(x_));
-axis image off;
+imsyn = vl_imsc(x_);
