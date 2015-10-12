@@ -8,7 +8,7 @@ opts.lambdaLb = 0;
 opts.textureLayer = {'relu1_1','relu2_1','relu3_1','relu4_1','relu5_1'};
 opts.textureLayerWeights = [1 1 1 1 1];
 opts.useGPU = false;
-opts.clipPrctile = 0.1; % Use this to determine the min and max
+opts.clipPrctile = 0.5; % Use this to determine the min and max
                         % [range: 0-100]
 
 % Options for texture initialization
