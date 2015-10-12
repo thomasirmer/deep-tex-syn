@@ -2,7 +2,6 @@ function [z, dzdx] = texture_fun(x, net, objectiveString, opts)
 if strcmp(net.device, 'gpu')
   x = gpuArray(x);
 end
-
 inputs = {'input', reshape(x, opts.imageSize)};
 net.eval(inputs, objectiveString);
 z = 0;
@@ -18,6 +17,13 @@ dzdx = net.vars(net.getVarIndex('input')).der;
 z = z + opts.lambdaTV/2*tvz;
 dzdx = dzdx + opts.lambdaTV/2*tvdzdx;
 
+% Gradient of the L-beta norm
+lz = sum(x(:).^opts.beta);
+ldzdx = opts.beta*x.^(opts.beta-1);
+z = z + opts.lambdaLb/2*lz;
+dzdx = dzdx + reshape(opts.lambdaLb/2*ldzdx, opts.imageSize);
+
+% Reshape it to a vector
 dzdx = dzdx(:);
 
 if strcmp(net.device, 'gpu')
