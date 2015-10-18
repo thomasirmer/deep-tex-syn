@@ -7,6 +7,8 @@ opts.beta = 2;
 opts.lambdaLb = 0;
 opts.textureLayer = {'relu1_1','relu2_1','relu3_1','relu4_1','relu5_1'};
 opts.textureLayerWeights = [1 1 1 1 1];
+opts.attributeLayer = {'relu2_2', 'relu3_3', 'relu4_3'};
+opts.attributeLayerWeights = [1 1 1];
 opts.useGPU = false;
 opts.clipPrctile = 0.5; % Use this to determine the min and max
                         % [range: 0-100]
