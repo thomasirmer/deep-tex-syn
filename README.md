@@ -25,22 +25,23 @@ Run the `texture_syn_demo.m` to see an example of texture synthesis. The code im
 
 ### Install dependencies
 
-The code depends on VLFEAT, MatConvNet, and minFunc. Download and install these in the current directories. The code is tested under MatConvNet version `v1-beta15`. You can follow the detailed instructions on the project pages to install these on your local machine. For example, here are the steps I followed to install these on a MacBookPro laptop running MATLAB_R2014b. 
+The code depends on VLFEAT, MatConvNet, minFunc and imagequilt. Download and install these in the current directories. The code is tested under MatConvNet version `v1-beta15` modified to include bilinear and normalizaton layers. You can follow the detailed instructions on the project pages to install these on your local machine. For example, here are the steps I followed to install these on a MacBookPro laptop running MATLAB_R2014b. 
 
-To install MatConvNet (w/o GPU support):
+0. To install **MatConvNet** (w/o GPU support):
 
-	>> git clone git@github.com:vlfeat/matconvnet.git
-	>> cd matconvnet
-	>> git checkout -n v1-best15
-	>> make
+		>> git clone git@bitbucket.org:smaji/matconvnet-bilinear.git
+		>> cd matconvnet
+		>> make
 
-To install VLFEAT:
-
-	>> git clone git@github.com:vlfeat/vlfeat.git
-	>> cd vlfeat
-	>> make ARCH=maci64 MEX=/Applications/MATLAB_R2014b.app/bin/mex
+0. To install **VLFEAT**:
 	
-To install minFunc follow the instructions on the [webpage](https://www.cs.ubc.ca/~schmidtm/Software/minFunc.html).
+		>> git clone git@github.com:vlfeat/vlfeat.git
+		>> cd vlfeat
+		>> make ARCH=maci64 MEX=/Applications/MATLAB_R2014b.app/bin/mex
+	
+0. To install **minFunc** (for L-BFGS) follow the instructions on the [project webpage](https://www.cs.ubc.ca/~schmidtm/Software/minFunc.html).
+
+0. Optionally download **imagequilt**, a MATLAB implementation of Efros & Freeman 2001 paper. This is only needed if you want to initialize texture with `opts.textureInit=quilt` option.
 
 Once installed modify `setup.m` to point to their locations.
 
@@ -49,4 +50,3 @@ Once installed modify `setup.m` to point to their locations.
 For the experiments in the paper we use these three CNNs: [imagenet-caffe-alex](http://www.vlfeat.org/matconvnet/models/imagenet-caffe-alex.mat), [imagenet-vgg-m](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-m.mat), [imagenet-vgg-verydeep-16](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-16.mat).
 
 Download these models and put them in `data/models` directory.
-
