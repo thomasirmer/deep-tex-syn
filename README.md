@@ -41,9 +41,9 @@ The code depends on VLFEAT, MatConvNet, minFunc and imagequilt. Download and ins
 	
 0. To install **minFunc** (for L-BFGS) follow the instructions on the [project webpage](https://www.cs.ubc.ca/~schmidtm/Software/minFunc.html).
 
-0. Optionally download **imagequilt**, a MATLAB implementation of Efros & Freeman 2001 paper. This is only needed if you want to initialize texture with `opts.textureInit=quilt` option.
+0. Optionally download files for [**imagequilt**](http://www.cs.princeton.edu/~cdecoro/imagequilting), a MATLAB implementation of Efros & Freeman 2001. This is needed to initialize texture with `opts.textureInit=quilt` option.
 
-Once installed modify `setup.m` to point to their locations.
+Then modify `setup.m` to point to the installed locations.
 
 ### Download ImageNet pre-trained CNNs
 
