@@ -16,16 +16,29 @@ for i = 1:length(opts.textureLayer),
     layerOutput = net.layers(net.getLayerIndex(opts.textureLayer{i})).outputs;
     assert(length(layerOutput) == 1);
     input = layerOutput{1};
-    layerName = sprintf('b%s',opts.textureLayer{i});
-    output = sprintf('tex%i', i);
+    layerName = sprintf('b%s', opts.textureLayer{i});
+    output = sprintf('b%i', i);
     net.addLayer(layerName, dagnn.BilinearPooling(), {input}, output);
+
+    % Square-root layer
+    layerName = sprintf('sqrt%s', opts.textureLayer{i});
+    input = output;
+    output = sprintf('sqrt%i', i);
+    net.addLayer(layerName, dagnn.SquareRoot(), {input}, output);
     
+    % L2 normalization layer
+    layerName = sprintf('l2%s', opts.textureLayer{i});
+    input = output;
+    output = sprintf('tex%i', i);
+    net.addLayer(layerName, dagnn.L2Norm(), {input}, output);
+
     % Add a loss layer matching the input to the output
+    input = output;
     input2 = sprintf('target%i', i);
     layerName = sprintf('loss%i', i);
-    output2 = sprintf('objective%i', i);
+    output = sprintf('objective%i', i);
     net.addLayer(layerName, dagnn.Loss('loss', 'l2'), ...
-        {output,input2},output2) ;
+        {input,input2},output) ;
 end
 
 % For each attribute layer in opts.attributeLayer, add a bilinear
@@ -61,13 +74,13 @@ for i = 1:length(opts.attributeLayer),
     layerName = sprintf('attr%i', opts.attributeLayer{i});
     input = output;
     output = sprintf('score%i', i);
+
     % TODO: add parameters based on the name of the file and set
     % these when creating layers
     param(1).name = sprintf('wts%i', opts.attributeLayer{i});
-    param(1).value = ...;
+    %param(1).value = ...;
     param(2).name = sprintf('bias%i', opts.attributeLayer{i});
-    param(2).value = ...;
-    net.ad
+    %param(2).value = ...;
     net.addLayer(layerName, dagnn.Conv(), {input}, output, param.name);
 
     % Softmax layer

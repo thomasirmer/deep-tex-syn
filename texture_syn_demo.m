@@ -7,7 +7,7 @@ im = imread('food.jpg');
 im = imresize(im, [224 224]);
 
 % Load network
-% net = load('data/models/imagenet-vgg-verydeep-16.mat');
+%net = load('data/models/imagenet-vgg-verydeep-16.mat');
 
 % Run texture synthesis
 tic;
