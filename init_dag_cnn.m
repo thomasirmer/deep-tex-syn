@@ -16,7 +16,8 @@ for i = 1:length(opts.textureLayer),
     input = layerOutput{1};
     layerName = sprintf('b%s', opts.textureLayer{i});
     output = sprintf('tex%i', i);
-    net.addLayer(layerName, dagnn.BilinearPooling(), {input}, output);
+    net.addLayer(layerName, dagnn.BilinearPooling('normalizeGradients', true), ...
+                 {input}, output);
 
     % Add a loss layer matching the input to the output
     input = output;
@@ -30,17 +31,16 @@ end
 % For each attribute layer in opts.attributeLayer
 for i = 1:length(opts.attributeLayer),
     % Add bilinearpool layer (unless it already exists)
-    [alreadyComputed, memId] = ismember(opts.attributeLayer{i}, ...
-					opts.textureLayer);
+    [alreadyComputed, memId] = ismember(opts.attributeLayer{i}, opts.textureLayer);
     if alreadyComputed
-      output = sprintf('tex%i', memId);
+        output = sprintf('tex%i', memId);
     else
-      layerOutput = net.layers(net.getLayerIndex(opts.attributeLayer{i})).outputs;
-      input = layerOutput{1};
-      layerName = sprintf('ba%s',opts.attributeLayer{i});
-      output = sprintf('texa%i', i);
-      net.addLayer(layerName, dagnn.BilinearPooling(), {input}, ...
-                     output);
+        layerOutput = net.layers(net.getLayerIndex(opts.attributeLayer{i})).outputs;
+        input = layerOutput{1};
+        layerName = sprintf('ba%s',opts.attributeLayer{i});
+        output = sprintf('texa%i', i);
+        net.addLayer(layerName, ...
+                     dagnn.BilinearPooling('normalizeGradients', false), {input}, output);
     end
     
     % Square-root layer
@@ -87,7 +87,7 @@ for i = 1:length(opts.attributeLayer),
     layerName = sprintf('lossattr%i', i);
     output = sprintf('objectiveattr%i',i);
     net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog'), ...
-		 {input,inputattr}, output) ;
+                                                {input,inputattr}, output) ;
 end
 
 % Compute targets to match the texture outputs
@@ -118,17 +118,19 @@ for i = 1:length(opts.textureLayer),
 end
 
 % Set target attribute values
-classes = tmp.classes;
-[~, classId] = ismember(opts.attributeTarget, tmp.classes);
-varId = net.getVarIndex('targetattr');
-targetLabel = zeros([1 1 1 1],'single');
-targetLabel = classId;
-if opts.useGPU
-   net.vars(varId).value = gpuArray(targetLabel);
-else
-   net.vars(varId).value = targetLabel;
+if length(opts.attributeLayer) > 0
+    classes = tmp.classes;
+    [~, classId] = ismember(opts.attributeTarget, tmp.classes);
+    varId = net.getVarIndex('targetattr');
+    targetLabel = zeros([1 1 1 1],'single');
+    targetLabel = classId;
+    if opts.useGPU
+        net.vars(varId).value = gpuArray(targetLabel);
+    else
+        net.vars(varId).value = targetLabel;
+    end
+    net.vars(varId).precious = true;
 end
-net.vars(varId).precious = true;
 
 
 % Set a string of weighted objectives;
