@@ -9,28 +9,14 @@ nets.layers = nets.layers(1:max(id)); %Clip nets to the maxLayer
 net = dagnn.DagNN();
 net = net.fromSimpleNN(nets, 'CanonicalNames', true);
 
-% For each texture layer in opts.textureLayer, add a bilinear layer
-% with l2 loss layers for matching the outputs
+% For each texture layer in opts.textureLayer
 for i = 1:length(opts.textureLayer),
     % Add bilinearpool layer
     layerOutput = net.layers(net.getLayerIndex(opts.textureLayer{i})).outputs;
-    assert(length(layerOutput) == 1);
     input = layerOutput{1};
     layerName = sprintf('b%s', opts.textureLayer{i});
-    output = sprintf('b%i', i);
-    net.addLayer(layerName, dagnn.BilinearPooling(), {input}, output);
-
-    % Square-root layer
-    layerName = sprintf('sqrt%s', opts.textureLayer{i});
-    input = output;
-    output = sprintf('sqrt%i', i);
-    net.addLayer(layerName, dagnn.SquareRoot(), {input}, output);
-    
-    % L2 normalization layer
-    layerName = sprintf('l2%s', opts.textureLayer{i});
-    input = output;
     output = sprintf('tex%i', i);
-    net.addLayer(layerName, dagnn.L2Norm(), {input}, output);
+    net.addLayer(layerName, dagnn.BilinearPooling(), {input}, output);
 
     % Add a loss layer matching the input to the output
     input = output;
@@ -41,20 +27,19 @@ for i = 1:length(opts.textureLayer),
         {input,input2},output) ;
 end
 
-% For each attribute layer in opts.attributeLayer, add a bilinear
-% layer with sqrt, l2 normalization, and logistic loss layers
+% For each attribute layer in opts.attributeLayer
 for i = 1:length(opts.attributeLayer),
-    layerOutput = net.layers(net.getLayerIndex(opts.attributeLayer{i})).outputs;
-    assert(length(layerOutput) == 1);
-    input = layerOutput{1};
-    layerName = sprintf('b%s',opts.attributeLayer{i});
-    output = sprintf('tex%i', i);
-    
     % Add bilinearpool layer (unless it already exists)
-    alreadyComputed = ismember(opts.attributeLayer, ...
-                               opts.textureLayer);
-    if ~alreadyComputed
-        net.addLayer(layerName, dagnn.BilinearPooling(), {input}, ...
+    [alreadyComputed, memId] = ismember(opts.attributeLayer{i}, ...
+					opts.textureLayer);
+    if alreadyComputed
+      output = sprintf('tex%i', memId);
+    else
+      layerOutput = net.layers(net.getLayerIndex(opts.attributeLayer{i})).outputs;
+      input = layerOutput{1};
+      layerName = sprintf('ba%s',opts.attributeLayer{i});
+      output = sprintf('texa%i', i);
+      net.addLayer(layerName, dagnn.BilinearPooling(), {input}, ...
                      output);
     end
     
@@ -71,31 +56,38 @@ for i = 1:length(opts.attributeLayer),
     net.addLayer(layerName, dagnn.L2Norm(), {input}, output);
     
     % Convolutional layer
-    layerName = sprintf('attr%i', opts.attributeLayer{i});
+    layerName = sprintf('attr%s', opts.attributeLayer{i});
     input = output;
     output = sprintf('score%i', i);
-
-    % TODO: add parameters based on the name of the file and set
-    % these when creating layers
-    param(1).name = sprintf('wts%i', opts.attributeLayer{i});
-    %param(1).value = ...;
-    param(2).name = sprintf('bias%i', opts.attributeLayer{i});
-    %param(2).value = ...;
-    net.addLayer(layerName, dagnn.Conv(), {input}, output, param.name);
+    modelfile = fullfile(opts.attributeDir, opts.attributeLayer{i});
+    tmp = load(modelfile);
+    param(1).name = sprintf('convattr_%if', i);
+    param(1).value = reshape(tmp.w, [1 1 size(tmp.w,1) size(tmp.w,2)]);
+    param(2).name = sprintf('convattr_%ib', i);
+    param(2).value = tmp.b;
+    net.addLayer(layerName, dagnn.Conv(), {input}, output, {param(1).name param(2).name});
+    for f = 1:2,
+	varId = net.getParamIndex(param(f).name);
+        if strcmp(net.device, 'gpu')
+	  net.params(varId).value = gpuArray(param(f).value);
+        else
+	  net.params(varId).value = param(f).value;
+        end
+    end
 
     % Softmax layer
-    layerName = sprintf('prob%i', opts.attributeLayer{i});
+    layerName = sprintf('prob%s', opts.attributeLayer{i});
     input = output; 
-    output = sprintf('prob%i', i);
+    output = sprintf('proba%i', i);
     net.addLayer(layerName, dagnn.SoftMax(), {input}, output);
     
     % Loss layer (Softmax loss)
     input = output;
     inputattr = sprintf('targetattr');
-    layerName = sprintf('loss-attr%i', i);
-    output = sprintf('objective-attr%i',i);
-    net.addLayer(layerName, dagnn.Loss('loss', 'softmax'), ...
-        {input,inputattr},output) ;
+    layerName = sprintf('lossattr%i', i);
+    output = sprintf('objectiveattr%i',i);
+    net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog'), ...
+		 {input,inputattr}, output) ;
 end
 
 % Compute targets to match the texture outputs
@@ -125,6 +117,20 @@ for i = 1:length(opts.textureLayer),
     net.vars(texInd).precious = false;
 end
 
+% Set target attribute values
+classes = tmp.classes;
+[~, classId] = ismember(opts.attributeTarget, tmp.classes);
+varId = net.getVarIndex('targetattr');
+targetLabel = zeros([1 1 1 1],'single');
+targetLabel = classId;
+if opts.useGPU
+   net.vars(varId).value = gpuArray(targetLabel);
+else
+   net.vars(varId).value = targetLabel;
+end
+net.vars(varId).precious = true;
+
+
 % Set a string of weighted objectives;
 objectiveString = {};
 for i = 1:length(opts.textureLayer),
@@ -133,6 +139,6 @@ for i = 1:length(opts.textureLayer),
 end
 for i = 1:length(opts.attributeLayer)
     objectiveString = {objectiveString{:}, ...
-                    sprintf('objective-attr%i', i), opts.attributeLayerWeights(i)};
+                    sprintf('objectiveattr%i', i), opts.attributeLayerWeights(i)};
 end    
 net.conserveMemory = false;
