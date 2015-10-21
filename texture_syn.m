@@ -5,8 +5,11 @@ opts = texture_setup();
 % Initialize a dagNN from simple network
 [net, objectiveString] = init_dag_cnn(im, nets, opts);
 
+% meanRGB value
+meanRGB = mean(mean(nets.normalization.averageImage));
+
 % Initialize random image
-x = texture_image_init(opts, im); x = x(:);
+x = texture_image_init(opts, im, meanRGB); x = x(:);
 
 % Move input to GPU if needed (note: net is on the GPU already)
 if opts.useGPU
@@ -18,8 +21,7 @@ x = minFunc(@(x) texture_fun(x, net, objectiveString, opts), ...
             x, opts.minFunc); 
 
 % Un-normalizate the image
-x_ = bsxfun(@plus, reshape(x, opts.imageSize), ...
-            mean(mean(nets.normalization.averageImage))) ;
+x_ = bsxfun(@plus, reshape(x, opts.imageSize), meanRGB);
 
 % Resale it to the valid range
 xrange = prctile(x_(:),[opts.clipPrctile 100-opts.clipPrctile]);

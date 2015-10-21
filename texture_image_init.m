@@ -1,4 +1,4 @@
-function x = texture_image_init(opts, im)
+function x = texture_image_init(opts, im, meanRGB)
 switch opts.textureInit 
   case 'rand'
     % Randomly initialize the image with Gaussian noise
@@ -9,6 +9,10 @@ switch opts.textureInit
         error('texture_image_init: no image specified for quilting');
     end
     x = quilt_texture(im, opts);
+  case 'same'
+    % Same as the input image
+    x = single(im);
+    x = bsxfun(@minus, x, meanRGB);
   otherwise
     error('invalid texture init option.');
 end
