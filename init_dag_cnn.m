@@ -34,7 +34,7 @@ for i = 1:length(opts.contentLayer),
    input2 = sprintf('target_cont_%i', i);
    layerName = sprintf('loss_cont_%i', i);
    output = sprintf('obj_cont_%i', i);
-   net.addLayer(layerName, dagnn.Loss('loss', 'l2', 'normalizeGradients', true), {input, input2}, output);
+   net.addLayer(layerName, dagnn.Loss('loss', 'l2'), {input, input2}, output);
 end
 
 % For each attribute layer in opts.attributeLayer
@@ -95,8 +95,8 @@ for i = 1:length(opts.attributeLayer),
     inputattr = sprintf('target_attr');
     layerName = sprintf('loss_attr_%i', i);
     output = sprintf('obj_attr_%i',i);
-    net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog'), ...
-                                                {input,inputattr}, output) ;
+    net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog', 'normalizeGradients', false), ...
+		 {input,inputattr}, output) ;
 end
 
 % Compute targets to match the texture outputs
