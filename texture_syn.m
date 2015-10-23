@@ -1,6 +1,6 @@
 function imsyn = texture_syn(im, nets, varargin)
 clear net;
-opts = texture_setup();
+opts = texture_setup(varargin);
 
 % Initialize a dagNN from simple network
 [net, objectiveString] = init_dag_cnn(im, nets, opts);
