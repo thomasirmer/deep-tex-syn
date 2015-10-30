@@ -31,14 +31,15 @@ opts.clipPrctile = 1; % Use this to determine min/max
 
 % Options for texture initialization
 opts.textureInit = 'rand'; % {'rand', 'quilt'};
-opts.rand.scale = 127;
-opts.quilt.patchSize = 24;
-opts.quilt.overlap = 2;
+opts.randScale = 127;
+opts.quiltPatchSize = 24;
+opts.quiltOverlap = 2;
 
-% minFunc options (no pesky learning rates)
+% minFunc options (no pesky learning rates for L-BFGS)
+opts.maxIter = 100;
 opts.minFunc.display = 'iter';
-opts.minFunc.maxIter = 1000;
 opts.minFunc.useMex = false;
 
 % Parse additional options
-opts = vl_argparse(opts, varargin);
+opts = vl_argparse(opts, varargin{:});
+opts.minFunc.maxIter = opts.maxIter;
