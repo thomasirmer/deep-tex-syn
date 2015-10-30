@@ -7,5 +7,8 @@ run vlfeat/toolbox/vl_setup.m;
 % Setup minFunc
 addpath(genpath('minFunc/'));
 
+% Setup imagequilt
+addpath('imagequilt');
+
 % Setup experiments
 addpath('exp/');
