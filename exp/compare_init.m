@@ -1,6 +1,5 @@
 function info = compare_init()
 % Experiment comparing different initialization techniques
-setup;
 
 % Load network
 if ~exist('net', 'var')

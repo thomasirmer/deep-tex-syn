@@ -95,7 +95,7 @@ for i = 1:length(opts.attributeLayer),
     inputattr = sprintf('target_attr');
     layerName = sprintf('loss_attr_%i', i);
     output = sprintf('obj_attr_%i',i);
-    net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog', 'normalizeGradients', false), ...
+    net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog'), ...
 		 {input,inputattr}, output) ;
 end
 
