@@ -7,7 +7,7 @@ if ~exist('net', 'var')
     net = load('data/models/imagenet-vgg-verydeep-16.mat');
 end
 
-im = imread('food.jpg');
+im = imread('data/textures/onion.png');
 im = imresize(im, [224 224]);
 
 
@@ -23,10 +23,10 @@ commonArgs = {'imageSize', [224 224 3], ...
               'textureLayerWeights', [1 1 1 1 1], ...
               'attributeLayer', {}, ...
               'attributeLayerWeights', [], ...
-              'maxIter', 10, ...
-              'useGPU', false};
+              'maxIter', 250, ...
+              'useGPU', true};
 
-numRuns = 1;
+numRuns = 5;
 
 for i = 1:numRuns,
     fprintf('run %i/%i: random\n', i, numRuns);
@@ -50,3 +50,9 @@ ylabel('objective');
 title('compare init');
 
 
+figure;
+for i = 1:numRuns, 
+    vl_tightsubplot(3, numRuns, i, 'margin', 0.01); imagesc(info.resRand{i}.imsyn); axis image off; 
+    vl_tightsubplot(3, numRuns, numRuns+i, 'margin', 0.01); imagesc(info.resQuilt{i}.init); axis image off;
+    vl_tightsubplot(3, numRuns, 2*numRuns+i, 'margin', 0.01); imagesc(info.resQuilt{i}.imsyn); axis image off;
+end
