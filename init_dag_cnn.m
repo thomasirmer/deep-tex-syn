@@ -89,14 +89,17 @@ for i = 1:length(opts.attributeLayer),
     input = output; 
     output = sprintf('proba%i', i);
     net.addLayer(layerName, dagnn.SoftMax(), {input}, output);
+
     
-    % Loss layer (Softmax loss)
+    % Loss layer (Softmax loss) for each attribute target
     input = output;
-    inputattr = sprintf('target_attr');
-    layerName = sprintf('loss_attr_%i', i);
-    output = sprintf('obj_attr_%i',i);
-    net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog'), ...
-		 {input,inputattr}, output) ;
+    for a = 1:length(opts.attributeTarget), 
+        inputattr = sprintf('target_attr_%i', a);
+        layerName = sprintf('loss_attr_%i_%i', i, a);
+        output = sprintf('obj_attr_%i_%i',i,a);
+        net.addLayer(layerName, dagnn.Loss('loss', 'softmaxlog'), ...
+                     {input,inputattr}, output) ;
+    end
 end
 
 % Compute targets to match the texture outputs
@@ -146,10 +149,9 @@ for i = 1:length(opts.contentLayer),
 end
 
 % Set target attribute values
-if length(opts.attributeLayer) > 0
-    classes = tmp.classes;
-    [~, classId] = ismember(opts.attributeTarget, tmp.classes);
-    varId = net.getVarIndex('target_attr');
+for a = 1:length(opts.attributeTarget)
+    [~, classId] = ismember(opts.attributeTarget{a}, tmp.classes);
+    varId = net.getVarIndex(sprintf('target_attr_%i',a));
     targetLabel = zeros([1 1 1 1],'single');
     targetLabel = classId;
     if opts.useGPU
@@ -165,14 +167,18 @@ end
 objectiveString = {};
 for i = 1:length(opts.textureLayer),
     objectiveString = {objectiveString{:}, ...
-                    sprintf('obj_style_%i', i), opts.textureLayerWeights(i)};
+                       sprintf('obj_style_%i', i), opts.textureLayerWeights(i)};
 end
 for i = 1:length(opts.contentLayer),
     objectiveString = {objectiveString{:}, ...
-                    sprintf('obj_cont_%i', i), opts.contentLayerWeights(i)};
+                       sprintf('obj_cont_%i', i), opts.contentLayerWeights(i)};
 end
 for i = 1:length(opts.attributeLayer)
+    for a = 1:length(opts.attributeTarget)
     objectiveString = {objectiveString{:}, ...
-                    sprintf('obj_attr_%i', i), opts.attributeLayerWeights(i)};
+                       sprintf('obj_attr_%i_%i', i,a), ...
+                       opts.attributeLayerWeights(i)* ...
+                       opts.attributeTargetWeights(a)};
+    end
 end    
 net.conserveMemory = false;
