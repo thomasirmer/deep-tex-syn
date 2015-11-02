@@ -4,7 +4,7 @@ opts.prefix = 'v2';
 opts.attribute = 'dtd';
 opts = vl_argparse(opts, varargin);
 opts.expDir = fullfile('data', opts.prefix, opts.attribute);
-opts.attributeDir = fullfile('data', sprintf('%s-weights', opts.attribute));
+opts.attributeDir = fullfile('data', 'models', opts.attribute);
 
 % Create directories
 mkdir(opts.expDir);

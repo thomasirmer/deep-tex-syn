@@ -25,7 +25,8 @@ opts.attributeLayerWeights = [1 1 1 1]*2000;
 %opts.attributeLayerWeights = [];
 
 opts.attributeDir = 'data/dtd-weights';
-opts.attributeTarget = 'honeycombed';
+opts.attributeTarget = {'honeycombed'};
+opts.attributeTargetWeights = [1];
 opts.useGPU = true;
 opts.clipPrctile = 1; % Use this to determine min/max
 
