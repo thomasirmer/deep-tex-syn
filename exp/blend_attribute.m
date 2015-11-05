@@ -15,8 +15,8 @@ opts.attributeDir = fullfile('data', 'models', opts.attribute);
 mkdir(opts.expDir);
 tmp = load(fullfile(opts.attributeDir, 'relu2_2.mat'));
 
-attributeTarget = {{'swirly', 'cobwebbed'}};
-attributeTargetWeights = {[0.5 0.5]};
+attributeTarget = {{'swirly', 'paisley'}};
+attributeTargetWeights = {[0.5 1]};
 
 for i = 1:length(attributeTarget), 
     fprintf('class %i/%i: %s\n', i, length(attributeTarget), makeFilename(attributeTarget{i}));
