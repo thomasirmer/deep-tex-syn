@@ -2,6 +2,7 @@ function modify_attribute_content(net, varargin)
 % Set paths
 opts.prefix = 'v2';
 opts.attribute = 'dtd';
+opts.imageName = 'jolie.jpg';
 opts = vl_argparse(opts, varargin);
 opts.expDir = fullfile('data', opts.prefix, opts.attribute);
 opts.attributeDir = fullfile('data', 'models', opts.attribute);
@@ -12,7 +13,7 @@ tmp = load(fullfile(opts.attributeDir, 'relu2_2.mat'));
 
 classNames = tmp.classes;
 
-imageName = 'jolie.jpg';
+imageName = opts.imageName;
 im = imread(fullfile('data', 'textures', imageName));
 im = imresize(im, [224 224]);
 
@@ -39,8 +40,8 @@ for i = 1:length(classNames),
                       'attributeTarget', {classNames{i}},...
                       'attributeDir', opts.attributeDir, ...
                       'textureInit', 'rand',...
-                      'maxIter', 100, ...
-                      'useGPU', false);
+                      'maxIter', 1000, ...
+                      'useGPU', true);
     
     imwrite(gather(res.imsyn), outFile);
     if true,
