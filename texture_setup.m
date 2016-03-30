@@ -24,6 +24,7 @@ opts.attributeLayerWeights = [1 1 1 1]*2000;
 %opts.attributeLayer = {};
 %opts.attributeLayerWeights = [];
 
+opts.attributeDataset = 'data/dtd';
 opts.attributeDir = 'data/dtd-weights';
 opts.attributeTarget = {'honeycombed'};
 opts.attributeTargetWeights = [1];
@@ -35,6 +36,8 @@ opts.textureInit = 'rand'; % {'rand', 'quilt'};
 opts.randScale = 127;
 opts.quiltPatchSize = 24;
 opts.quiltOverlap = 2;
+opts.exampleIndex = 1;
+opts.transferalpha = 0.1;
 
 % minFunc options (no pesky learning rates for L-BFGS)
 opts.maxIter = 100;
