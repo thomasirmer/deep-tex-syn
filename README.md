@@ -27,11 +27,12 @@ Run the `texture_syn_demo.m` to see an example of texture synthesis. The code im
 
 The code depends on VLFEAT, MatConvNet, minFunc and imagequilt. Download and install these in the current directories. The code is tested under MatConvNet version `v1-beta15` modified to include bilinear and normalizaton layers. You can follow the detailed instructions on the project pages to install these on your local machine. For example, here are the steps I followed to install these on a MacBookPro laptop running MATLAB_R2014b. 
 
-0. To install **MatConvNet** (w/o GPU support):
+0. To install **MatConvNet** and **BCNN extension**:
 
-		>> git clone git@bitbucket.org:smaji/matconvnet-bilinear.git
-		>> cd matconvnet
-		>> make
+		>> git submodule init
+		>> git submodule update
+		
+follow matconvnet compiling instructions to compile the matconvnet package.
 
 0. To install **VLFEAT**:
 	
