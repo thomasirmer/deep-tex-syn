@@ -1,3 +1,6 @@
 [submodule "bcnn-extension"]
 	path = bcnn-extension
 	url = git@bitbucket.org:tsungyu/matconvnet-bcnn-extension.git
+[submodule "matconvnet"]
+	path = matconvnet
+	url = https://github.com/vlfeat/matconvnet.git
