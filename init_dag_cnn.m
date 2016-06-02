@@ -16,7 +16,7 @@ for i = 1:length(opts.textureLayer),
     input = layerOutput{1};
     layerName = sprintf('b%s', opts.textureLayer{i});
     output = sprintf('style_%i', i);
-    net.addLayer(layerName, dagnn.BilinearPooling('normalizeGradients', true), ...
+    net.addLayer(layerName, BilinearPooling('normalizeGradients', true), ...
                  {input}, output);
 
     % Add a loss layer matching the input to the output
@@ -24,7 +24,7 @@ for i = 1:length(opts.textureLayer),
     input2 = sprintf('target_style_%i', i);
     layerName = sprintf('loss_style_%i', i);
     output = sprintf('obj_style_%i', i);
-    net.addLayer(layerName, dagnn.Loss('loss', 'l2'), {input,input2},output) ;
+    net.addLayer(layerName, L2Loss('loss', 'l2'), {input,input2},output) ;
 end
 
 % For each content layer in opts.contentLayer
@@ -34,7 +34,7 @@ for i = 1:length(opts.contentLayer),
    input2 = sprintf('target_cont_%i', i);
    layerName = sprintf('loss_cont_%i', i);
    output = sprintf('obj_cont_%i', i);
-   net.addLayer(layerName, dagnn.Loss('loss', 'l2'), {input, input2}, output);
+   net.addLayer(layerName, L2Loss('loss', 'l2'), {input, input2}, output);
 end
 
 % For each attribute layer in opts.attributeLayer
@@ -49,20 +49,20 @@ for i = 1:length(opts.attributeLayer),
         layerName = sprintf('ba%s',opts.attributeLayer{i});
         output = sprintf('stylea_%i', i);
         net.addLayer(layerName, ...
-                     dagnn.BilinearPooling('normalizeGradients', false), {input}, output);
+                     BilinearPooling('normalizeGradients', false), {input}, output);
     end
     
     % Square-root layer
     layerName = sprintf('sqrt%s', opts.attributeLayer{i});
     input = output;
     output = sprintf('sqrta%i', i);
-    net.addLayer(layerName, dagnn.SquareRoot(), {input}, output);
+    net.addLayer(layerName, SquareRoot(), {input}, output);
     
     % L2 normalization layer
     layerName = sprintf('l2%s', opts.attributeLayer{i});
     input = output;
     output = sprintf('l2a%i', i);
-    net.addLayer(layerName, dagnn.L2Norm(), {input}, output);
+    net.addLayer(layerName, L2Norm(), {input}, output);
     
     % Convolutional layer
     layerName = sprintf('attr%s', opts.attributeLayer{i});

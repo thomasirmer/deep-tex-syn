@@ -12,3 +12,5 @@ addpath('imagequilt');
 
 % Setup experiments
 addpath('exp/');
+
+addpath('bcnn-extension')
