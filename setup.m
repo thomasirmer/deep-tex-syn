@@ -10,7 +10,8 @@ addpath(genpath('minFunc/'));
 % Setup imagequilt
 addpath('imagequilt');
 
+% Setup B-CNN code
+addpath('bcnn-extension')
+
 % Setup experiments
 addpath('exp/');
-
-addpath('bcnn-extension')
